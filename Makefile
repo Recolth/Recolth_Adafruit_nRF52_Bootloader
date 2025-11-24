@@ -149,6 +149,7 @@ C_SRC += src/boards/boards.c
 # nrfx
 C_SRC += $(NRFX_PATH)/drivers/src/nrfx_power.c
 C_SRC += $(NRFX_PATH)/drivers/src/nrfx_nvmc.c
+C_SRC += $(NRFX_PATH)/drivers/src/nrfx_qspi.c
 C_SRC += $(NRFX_PATH)/mdk/system_$(MCU_SUB_VARIANT).c
 
 # SDK 11 files: serial + OTA DFU
@@ -232,7 +233,8 @@ IPATH += \
   $(NRFX_PATH)/mdk \
   $(NRFX_PATH)/hal \
   $(NRFX_PATH)/drivers/include \
-  $(NRFX_PATH)/drivers/src
+  $(NRFX_PATH)/drivers/src \
+  $(NRFX_PATH)/drivers
 
 # sdk11 for cdc/ble dfu
 IPATH += \
@@ -407,7 +409,7 @@ $(BUILD):
 
 clean:
 	@$(RM) $(BUILD)
-	@$(RM) $(BIN)
+# 	@$(RM) $(BIN)
 
 # linkermap must be install previously at https://github.com/hathach/linkermap
 linkermap: $(BUILD)/$(OUT_NAME).out
@@ -461,6 +463,7 @@ $(BIN):
 
 copy-artifact: $(BIN)
 	@$(CP) $(BUILD)/update-$(OUT_NAME)_nosd.uf2 $(BIN)
+	@$(CP) $(BUILD)/$(OUT_NAME)_nosd.hex $(BIN)
 	@$(CP) $(BUILD)/$(MERGED_FILE).hex $(BIN)
 	@$(CP) $(BUILD)/$(MERGED_FILE).zip $(BIN)
 

@@ -55,8 +55,10 @@ Mkfile.old
 dkms.conf
 
 segger/Output
+build/
 _build/
 bin/
+_bin/
 *.emSession
 *.jlink
 .idea/
