@@ -25,20 +25,21 @@
 #ifndef FLASH_NRF5X_H_
 #define FLASH_NRF5X_H_
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #include "nrfx_nvmc.h"
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
-void flash_nrf5x_write (uint32_t dst, void const *src, int len, bool need_erase);
-void flash_nrf5x_flush (bool need_erase);
+void flash_nrf5x_write(uint32_t dst, void const *src, int len, bool need_erase);
+void flash_nrf5x_flush(bool need_erase);
+void flash_nrf5x_rewrite_page(uint32_t page_addr, void const *page_data);
 
 #ifdef __cplusplus
- }
+}
 #endif
 
 #endif /* FLASH_NRF5X_H_ */

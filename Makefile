@@ -142,6 +142,9 @@ C_SRC += \
   src/main.c \
   src/screen.c \
   src/images.c \
+  src/qspi_dfu.c \
+  src/qspi_impl.c \
+  src/hamming.c \
 
 # all files in boards
 C_SRC += src/boards/boards.c
