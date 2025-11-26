@@ -101,7 +101,7 @@ int verify256(uint8_t *pData, uint8_t *eccChecksum) {
     return -1;
 }
 
-int ecc_checkAppBlock(uint32_t qspiBlockAddress, uint32_t internalBlockAddress, uint8_t *pData, uint8_t *blockr) {
+int ecc_checkAppBlock(uint32_t qspiBlockAddress, uint32_t internalBlockAddress, uint8_t *pBufQSPI, uint8_t *pBufInternal) {
     assertCustom((qspiBlockAddress % 0x1000) == 0);
     assertCustom((internalBlockAddress % 0x1000) == 0);
 
@@ -109,23 +109,25 @@ int ecc_checkAppBlock(uint32_t qspiBlockAddress, uint32_t internalBlockAddress, 
     uint32_t eccAddress      = QSPI_ADDRESS_DFU_ECC + (eccIndex * 0x40);
     uint32_t eccBlockAddress = eccAddress - (eccAddress % 0x1000);
 
-    qspi_read(blockr, 0x1000, eccBlockAddress);
-    memcpy(pData, (void *)internalBlockAddress, 0x1000);
-    qspi_read(pData, 0x1000, qspiBlockAddress);
+    qspi_read(pBufInternal, 0x1000, eccBlockAddress);
+    memcpy(pBufQSPI, (void *)internalBlockAddress, 0x1000);
+    qspi_read(pBufQSPI, 0x1000, qspiBlockAddress);
 
-    uint32_t eccChecksumOffset = 0;                            // Offset of ECC shecksum in the loop
+    uint32_t eccChecksumOffset = 0;                               // Offset of ECC shecksum in the loop
     bool     needRewrite       = false;
     for (size_t i = 0; i < 16; i++) {
-        int errCode = verify256(&pData[i * 0x100], &blockr[(eccAddress % 0x1000) + eccChecksumOffset]);
-        assertCustom(errCode != -1);                           // File is bad
+        int errCode = verify256(&pBufQSPI[i * 0x100], &pBufInternal[(eccAddress % 0x1000) + eccChecksumOffset]);
+        if (errCode != -1) {                                      // File is bad
+            return -1;
+        }
 
         if (errCode == 1) {
-            needRewrite = true;                                // Rewrite fixed block into flash here and now
+            needRewrite = true;                                   // Rewrite fixed block into flash here and now
         }
-        eccChecksumOffset += 4;                                // Shift to next 32-bit ECC checksum address
+        eccChecksumOffset += 4;                                   // Shift to next 32-bit ECC checksum address
     }
     if (needRewrite) {
-        flash_nrf5x_rewrite_page(internalBlockAddress, pData); // Rewrite fixed block into flash here and now
+        flash_nrf5x_rewrite_page(internalBlockAddress, pBufQSPI); // Rewrite fixed block into flash here and now
     }
     return 0;
 }

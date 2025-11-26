@@ -53,6 +53,8 @@
 #include "nrf_mbr.h"
 #include "pstorage_platform.h"
 
+#include "qspi_dfu.h"
+
 #ifdef NRF_USBD
 
 void usb_init(bool cdc_only);
@@ -176,6 +178,14 @@ int main(void) {
     // Reset peripherals
     board_teardown();
 
+    bool qspi_dfu_ok = false;
+    if (is_qspi_dfu_ready()) {
+        led_state(STATE_WRITING_STARTED);
+        qspi_dfu_process();
+        led_state(STATE_WRITING_FINISHED);
+        qspi_dfu_ok = true;
+    }
+
     /* Jump to application if valid
      * "Master Boot Record and SoftDevice initializaton procedure"
      * - SD_MBR_COMMAND_INIT_SD (if not already)
@@ -183,7 +193,7 @@ int main(void) {
      * - sd_softdevice_vector_table_base_set(APP_ADDR)
      * - jump to App reset
      */
-    if (bootloader_app_is_valid() && !bootloader_dfu_sd_in_progress()) {
+    if ((qspi_dfu_ok || bootloader_app_is_valid()) && !bootloader_dfu_sd_in_progress()) {
         PRINTF("App is valid\r\n");
         if (is_sd_existed()) {
             // MBR forward IRQ to SD (if not already)
