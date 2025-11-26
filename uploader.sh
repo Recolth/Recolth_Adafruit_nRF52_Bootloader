@@ -10,4 +10,4 @@ fi
 
 echo "$LATEST_HEX"
 
-openocd -f ~/stlink_nrf52.cfg -c "init; halt; flash write_image erase \"$LATEST_HEX\" 0x00000000 verify reset exit"    #set WORKAREASIZE 0 or set WORKAREASIZE 0x400 in config
+openocd -f ~/stlink_nrf52.cfg -c "program \"$LATEST_HEX\" verify reset exit"    #set WORKAREASIZE 0 or set WORKAREASIZE 0x400 in config
