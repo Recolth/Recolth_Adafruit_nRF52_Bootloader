@@ -1,6 +1,6 @@
 #!/bin/bash
 
-HEX_DIR=~/Documents/PlatformIO/Projects/Adafruit_nRF52_Bootloader/_bin/xiao_nrf52840_ble_sense
+HEX_DIR=./_bin/xiao_nrf52840_ble_sense
 LATEST_HEX=$(find "$HEX_DIR" -type f -name '*s140*.hex' -printf '%T@ %p\n' | sort -nr | head -n1 | cut -d' ' -f2-)
 
 if [ -z "$LATEST_HEX" ]; then
