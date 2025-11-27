@@ -1,23 +1,49 @@
 #ifndef ASSERTCONTROLLER_H
 #define ASSERTCONTROLLER_H
 #include "boards.h"
-
-// #define DEBUG_ASSERT_ON
+#include "nrfx_rtc.h"
 
 inline static void _assertCustomImpl(const char *expr, const char *file, int line) __attribute__((__noreturn__));
 
 inline static void _assertCustomImpl(const char *expr, const char *file, int line) {
-    uint16_t i = 0;
+#ifdef CFG_DEBUG_CUSTOM
+    nrf_rtc_task_trigger(NRF_RTC1, NRF_RTC_TASK_START);
+    nrf_gpio_pin_clear(DEBUG_LED_0);
+    nrf_gpio_pin_clear(DEBUG_LED_1);
+    nrf_gpio_pin_clear(DEBUG_LED_2);
+    nrf_gpio_pin_clear(DEBUG_LED_3);
+    nrf_gpio_pin_clear(DEBUG_LED_4);
+    nrf_gpio_pin_clear(DEBUG_LED_5);
+    nrf_gpio_pin_clear(DEBUG_LED_6);
+#endif
+    const uint32_t period = (line > 127) ? 32000 : 64000;
+    led_state(STATE_WRITING_STARTED);
     while (true) {
-#ifdef DEBUG_ASSERT_ON
-        if (i % 64000 == 0) {
-            PRINTF("Assertion failed: %s in file %s at line %d", expr, file, line);
+#ifdef CFG_DEBUG_CUSTOM
+        if (nrf_rtc_counter_get(NRF_RTC1) % period == 0) {
+            if (line & 0b1) {
+                nrf_gpio_pin_toggle(DEBUG_LED_0);
+            }
+            if (line & 0b10) {
+                nrf_gpio_pin_toggle(DEBUG_LED_1);
+            }
+            if (line & 0b100) {
+                nrf_gpio_pin_toggle(DEBUG_LED_2);
+            }
+            if (line & 0b1000) {
+                nrf_gpio_pin_toggle(DEBUG_LED_3);
+            }
+            if (line & 0b10000) {
+                nrf_gpio_pin_toggle(DEBUG_LED_4);
+            }
+            if (line & 0b100000) {
+                nrf_gpio_pin_toggle(DEBUG_LED_5);
+            }
+            if (line & 0b1000000) {
+                nrf_gpio_pin_toggle(DEBUG_LED_6);
+            }
         }
 #endif
-
-        led_state(STATE_WRITING_STARTED);
-
-        i++;
     }
 }
 
