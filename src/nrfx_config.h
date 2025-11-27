@@ -24,8 +24,14 @@
 #define NRFX_QSPI_DEFAULT_CONFIG_IRQ_PRIORITY 7
 
 // RTC counter
+#ifndef NRFX_RTC0_ENABLED
+#  define NRFX_RTC0_ENABLED 0
+#endif
 #ifndef NRFX_RTC1_ENABLED
 #  define NRFX_RTC1_ENABLED 1
+#endif
+#ifndef NRFX_RTC2_ENABLED
+#  define NRFX_RTC2_ENABLED 0
 #endif
 
 // UART
