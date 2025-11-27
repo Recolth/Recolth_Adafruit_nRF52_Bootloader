@@ -23,6 +23,11 @@
 #define NRFX_QSPI_ENABLED                     1
 #define NRFX_QSPI_DEFAULT_CONFIG_IRQ_PRIORITY 7
 
+// RTC counter
+#ifndef NRFX_RTC1_ENABLED
+#  define NRFX_RTC1_ENABLED 1
+#endif
+
 // UART
 #ifdef NRF52832_XXAA
 #  define NRFX_UART_ENABLED                     1

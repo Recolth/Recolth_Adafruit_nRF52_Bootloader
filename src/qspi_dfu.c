@@ -8,16 +8,16 @@ static uint32_t app_length = 0;
 
 bool is_qspi_dfu_ready() {
     BootFlag magic_dfu;
-    qspi_read(&magic_dfu, sizeof(magic_dfu), QSPI_ADDRESS_DFU_MAGIC_BLOCK + QSPI_OFFSET_DFU_MAGIC_PRESENT);
-    qspi_read(&app_length, sizeof(app_length), QSPI_ADDRESS_DFU_MAGIC_BLOCK + QSPI_OFFSET_DFU_FILE_LENGTH);
+    uint8_t  magicBlock[0x1000];
+    qspi_read(&magicBlock, 0x1000, QSPI_ADDRESS_DFU_MAGIC_BLOCK);
+    memcpy(&magic_dfu, &magicBlock[QSPI_OFFSET_DFU_MAGIC_PRESENT], sizeof(magic_dfu));
+    memcpy(&app_length, &magicBlock[QSPI_OFFSET_DFU_FILE_LENGTH], sizeof(app_length));
 
     if (magic_dfu == BF_READY) {
         if (app_length && app_length <= DFU_IMAGE_MAX_SIZE_FULL) {
             return true;
         }
         magic_dfu = BF_EMPTY;
-        uint8_t magicBlock[0x1000];
-        qspi_read(&magicBlock, sizeof(magicBlock), QSPI_ADDRESS_DFU_MAGIC_BLOCK);
         memcpy(&magicBlock[QSPI_OFFSET_DFU_MAGIC_PRESENT], &magic_dfu, sizeof(magic_dfu));
         qspi_write_4_retry(magicBlock, QSPI_ADDRESS_DFU_MAGIC_BLOCK);
     }
@@ -55,7 +55,7 @@ void qspi_dfu_process() {
         }
     }
 
-    qspi_read(&pBufQSPI, sizeof(pBufQSPI), QSPI_ADDRESS_DFU_MAGIC_BLOCK);
+    qspi_read(&pBufQSPI, 0x1000, QSPI_ADDRESS_DFU_MAGIC_BLOCK);
     memcpy(&pBufQSPI[QSPI_OFFSET_DFU_MAGIC_PRESENT], &magic_dfu, sizeof(magic_dfu));
     qspi_write_4_retry(pBufQSPI, QSPI_ADDRESS_DFU_MAGIC_BLOCK);
 

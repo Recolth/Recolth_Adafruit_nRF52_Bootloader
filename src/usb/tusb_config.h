@@ -26,22 +26,22 @@
 #define _TUSB_CONFIG_H_
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 //--------------------------------------------------------------------+
 // COMMON CONFIGURATION
 //--------------------------------------------------------------------+
-#define CFG_TUSB_MCU                OPT_MCU_NRF5X
-#define CFG_TUSB_RHPORT0_MODE       OPT_MODE_DEVICE
+#define CFG_TUSB_MCU          OPT_MCU_NRF5X
+#define CFG_TUSB_RHPORT0_MODE OPT_MODE_DEVICE
 
 #ifndef CFG_TUSB_DEBUG
-#define CFG_TUSB_DEBUG              0
+#  define CFG_TUSB_DEBUG 0 // 2
 #endif
 
 /*------------- RTOS -------------*/
-#define CFG_TUSB_OS                 OPT_OS_NONE
-//#define CFG_TUD_TASK_QUEUE_SZ     16
+#define CFG_TUSB_OS OPT_OS_NONE
+// #define CFG_TUD_TASK_QUEUE_SZ     16
 
 //--------------------------------------------------------------------+
 // DEVICE CONFIGURATION
@@ -49,32 +49,31 @@
 //--------------------------------------------------------------------+
 
 /*------------- Core -------------*/
-#define CFG_TUD_ENDOINT0_SIZE       64
+#define CFG_TUD_ENDOINT0_SIZE 64
 
 //------------- Class enabled -------------//
-#define CFG_TUD_CDC                 1
-#define CFG_TUD_MSC                 1
+#define CFG_TUD_CDC 1
+#define CFG_TUD_MSC 1
 
 /*------------------------------------------------------------------*/
 /* CLASS DRIVER
  *------------------------------------------------------------------*/
 
 // FIFO size of CDC TX and RX
-#define CFG_TUD_CDC_RX_BUFSIZE      1024
-#define CFG_TUD_CDC_TX_BUFSIZE      1024
+#define CFG_TUD_CDC_RX_BUFSIZE 1024
+#define CFG_TUD_CDC_TX_BUFSIZE 1024
 
 // Buffer size for each read/write transfer, the more the better
-#define CFG_TUD_MSC_BUFSIZE         (4*1024)
-
+#define CFG_TUD_MSC_BUFSIZE (4 * 1024)
 
 //--------------------------------------------------------------------+
 // USB RAM PLACEMENT
 //--------------------------------------------------------------------+
 #define CFG_TUSB_MEM_SECTION
-#define CFG_TUSB_MEM_ALIGN          __attribute__ ((aligned(4)))
+#define CFG_TUSB_MEM_ALIGN __attribute__((aligned(4)))
 
 #ifdef __cplusplus
- }
+}
 #endif
 
 #endif /* _TUSB_CONFIG_H_ */

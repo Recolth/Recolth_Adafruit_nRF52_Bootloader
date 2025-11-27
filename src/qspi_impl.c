@@ -22,6 +22,7 @@ void qspi_write_4(const uint8_t *pData, uint32_t blockStartAddress) {
 
 void qspi_read(void *pData, size_t length, uint32_t address) {
     assertCustom((length % 4) == 0);
+
     assertCustom((address % 4) == 0);
     waitForReady();
     assertCustom(nrfx_qspi_read(pData, length, address) == NRFX_SUCCESS);

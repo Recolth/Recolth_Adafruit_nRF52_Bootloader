@@ -25,44 +25,55 @@
 #ifndef _XIAO_BLE_SENSE
 #define _XIAO_BLE_SENSE
 
-#define _PINNUM(port, pin)    ((port)*32 + (pin))
+#define _PINNUM(port, pin) ((port) * 32 + (pin))
 
 /*------------------------------------------------------------------*/
 /* LED
  *------------------------------------------------------------------*/
 // The board has 3 leds, but changing the number here causes OTA issues.
-#define LEDS_NUMBER           1
-#define LED_PRIMARY_PIN       _PINNUM(0, 26)
-#define LED_STATE_ON          0
+#define LEDS_NUMBER      1
+#define LED_PRIMARY_PIN  _PINNUM(0, 26)
+#define LED_STATE_ON     0
 
-#define NEOPIXELS_NUMBER      0
+#define NEOPIXELS_NUMBER 0
 
 /*------------------------------------------------------------------*/
 /* BUTTON
  *------------------------------------------------------------------*/
-#define BUTTONS_NUMBER        2
-#define BUTTON_1              _PINNUM(0, 18)
-// Button 2 is defined as D1 from expansion board.
-#define BUTTON_2              _PINNUM(0, 3)
-#define BUTTON_PULL           NRF_GPIO_PIN_PULLUP
+#define BUTTONS_NUMBER 2
+#define BUTTON_1       _PINNUM(0, 18)
+// Button 2 is defined as D7 from expansion board.
+#define BUTTON_2    _PINNUM(1, 12)
+#define BUTTON_PULL NRF_GPIO_PIN_PULLUP
+/*------------------------------------------------------------------*/
+/* DEBUG OUTPUT LEDS
+ *------------------------------------------------------------------*/
+#define DEBUG_LED_0 _PINNUM(0, 2)
+#define DEBUG_LED_1 _PINNUM(0, 3)
+#define DEBUG_LED_2 _PINNUM(0, 28)
+#define DEBUG_LED_3 _PINNUM(0, 29)
+#define DEBUG_LED_4 _PINNUM(0, 4)
+#define DEBUG_LED_5 _PINNUM(0, 5)
+#define DEBUG_LED_6 _PINNUM(1, 11)
 
 //--------------------------------------------------------------------+
 // BLE OTA
 //--------------------------------------------------------------------+
-#define BLEDIS_MANUFACTURER   "Seeed"
-#define BLEDIS_MODEL          "XIAO nRF52840 Sense"
+#define BLEDIS_MANUFACTURER "Seeed"
+#define BLEDIS_MODEL        "XIAO nRF52840 Sense"
 
 //--------------------------------------------------------------------+
 // USB
 //--------------------------------------------------------------------+
-#define USB_DESC_VID           0x2886
-#define USB_DESC_UF2_PID       0x0045
-#define USB_DESC_CDC_ONLY_PID  0x0045
+#define USB_DESC_VID          0x2886
+#define USB_DESC_UF2_PID      0x0045
+#define USB_DESC_CDC_ONLY_PID 0x0045
 
 //------------- UF2 -------------//
-#define UF2_PRODUCT_NAME   "Seeed XIAO nRF52840"
-#define UF2_VOLUME_LABEL   "XIAO-SENSE"
-#define UF2_BOARD_ID       "nRF52840-SeeedXiaoSense-v1"
-#define UF2_INDEX_URL      "https://www.seeedstudio.com/"
+#define UF2_PRODUCT_NAME "Seeed XIAO nRF52840"
+#define UF2_VOLUME_LABEL "XIAO-SENSE"
+#define UF2_BOARD_ID     "nRF52840-SeeedXiaoSense-v1"
+#define UF2_INDEX_URL    "https://www.seeedstudio.com/"
+// #define BOOTLOADER_DEBUG 1
 
 #endif // _XIAO_BLE_SENSE
