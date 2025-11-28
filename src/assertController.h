@@ -3,6 +3,12 @@
 #include "boards.h"
 #include "nrfx_rtc.h"
 
+#ifdef CFG_DEBUG_CUSTOM
+#  define DEBUG_LED(led) nrf_gpio_pin_set(led)
+#else
+#  define DEBUG_LED(led)
+#endif
+
 inline static void _assertCustomImpl(const char *expr, const char *file, int line) __attribute__((__noreturn__));
 
 inline static void _assertCustomImpl(const char *expr, const char *file, int line) {
@@ -15,8 +21,8 @@ inline static void _assertCustomImpl(const char *expr, const char *file, int lin
     nrf_gpio_pin_clear(DEBUG_LED_4);
     nrf_gpio_pin_clear(DEBUG_LED_5);
     nrf_gpio_pin_clear(DEBUG_LED_6);
-#endif
     const uint32_t period = (line > 127) ? 32000 : 64000;
+#endif
     led_state(STATE_WRITING_STARTED);
     while (true) {
 #ifdef CFG_DEBUG_CUSTOM

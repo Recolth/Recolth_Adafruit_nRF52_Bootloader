@@ -153,13 +153,13 @@ int main(void) {
     // Save bootloader version to pre-defined register, retrieved by application
     // TODO move to CF2
     BOOTLOADER_VERSION_REGISTER = (MK_BOOTLOADER_VERSION);
-    nrf_gpio_pin_set(DEBUG_LED_0);
+    DEBUG_LED(DEBUG_LED_0);
 
     board_init();
-    nrf_gpio_pin_set(DEBUG_LED_1);
+    DEBUG_LED(DEBUG_LED_1);
     nrfx_qspi_config_t config_QSPI = NRFX_QSPI_DEFAULT_CONFIG(21, 25, 20, 24, 22, 23);
     nrfx_qspi_init(&config_QSPI, NULL, NULL);
-    nrf_gpio_pin_set(DEBUG_LED_2);
+    DEBUG_LED(DEBUG_LED_2);
     bootloader_init();
     PRINTF("Bootloader Start\r\n");
     led_state(STATE_BOOTLOADER_STARTED);
@@ -180,12 +180,13 @@ int main(void) {
 
     bool qspi_dfu_ok = false;
     if (is_qspi_dfu_ready()) {
+        DEBUG_LED(DEBUG_LED_3);
         led_state(STATE_WRITING_STARTED);
         qspi_dfu_process();
         led_state(STATE_WRITING_FINISHED);
         qspi_dfu_ok = true;
     }
-    nrf_gpio_pin_set(DEBUG_LED_3);
+    DEBUG_LED(DEBUG_LED_4);
 
     // Reset peripherals
     board_teardown();
