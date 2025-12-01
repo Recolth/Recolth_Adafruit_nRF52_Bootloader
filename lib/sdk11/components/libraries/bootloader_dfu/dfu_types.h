@@ -41,7 +41,7 @@ static inline bool is_sd_existed(void) { return *((uint32_t *)(SOFTDEVICE_INFO_S
 
 // Application address is either after MBR or SD (if existed)
 #  define CODE_REGION_1_START                                                                                                                             \
-        (is_sd_existed() ? 0x00027000                                                                                                                     \
+        (is_sd_existed() ? SD_SIZE_GET(MBR_SIZE)                                                                                                          \
                          : MBR_SIZE) /**< This field should correspond to the size of Code Region 0, (which is identical to Start of Code Region 1),      \
                                         found in UICR.CLEN0 register. This value is used for compile safety, as the linker will fail if application       \
                                         expands into bootloader. Runtime, the bootloader will use the value found in UICR.CLEN0. */
@@ -69,7 +69,7 @@ static inline bool is_sd_existed(void) { return *((uint32_t *)(SOFTDEVICE_INFO_S
 // Flash = 1024 KB, allow to be defined in debug mode
 #    ifndef BOOTLOADER_REGION_START
 #      define BOOTLOADER_REGION_START                                                                                                                     \
-            0x000ED000 /**< This field should correspond to start address of the bootloader, found in UICR.RESERVED, 0x10001014, register. This value is  \
+            0x000F4000 /**< This field should correspond to start address of the bootloader, found in UICR.RESERVED, 0x10001014, register. This value is  \
                           used for sanity check, so the bootloader will fail immediately if this value differs from runtime value. The value is used to   \
                           determine max application size for updating. */
 #    endif

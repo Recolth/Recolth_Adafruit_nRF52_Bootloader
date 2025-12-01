@@ -10,4 +10,13 @@ fi
 
 echo "$LATEST_HEX"
 
+openocd -f interface/stlink.cfg -f target/nrf52.cfg \
+  -c "init" \
+  -c "reset halt" \
+  -c "nrf5 mass_erase" \
+  -c "reset run" \
+  -c "exit"
+
+sleep 1
+
 openocd -f ~/stlink_nrf52.cfg -c "program \"$LATEST_HEX\" verify reset exit"    #set WORKAREASIZE 0 or set WORKAREASIZE 0x400 in config
