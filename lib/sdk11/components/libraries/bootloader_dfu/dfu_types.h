@@ -69,7 +69,7 @@ static inline bool is_sd_existed(void) { return *((uint32_t *)(SOFTDEVICE_INFO_S
 // Flash = 1024 KB, allow to be defined in debug mode
 #    ifndef BOOTLOADER_REGION_START
 #      define BOOTLOADER_REGION_START                                                                                                                     \
-            0x000F4000 /**< This field should correspond to start address of the bootloader, found in UICR.RESERVED, 0x10001014, register. This value is  \
+            0x000F0000 /**< This field should correspond to start address of the bootloader, found in UICR.RESERVED, 0x10001014, register. This value is  \
                           used for sanity check, so the bootloader will fail immediately if this value differs from runtime value. The value is used to   \
                           determine max application size for updating. */
 #    endif

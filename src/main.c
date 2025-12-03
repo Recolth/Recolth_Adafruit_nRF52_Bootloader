@@ -107,6 +107,8 @@ extern void tusb_hal_nrf_power_event(uint32_t event);
 #define BOOTLOADER_VERSION_REGISTER NRF_TIMER2->CC[0]
 #define DFU_SERIAL_STARTUP_INTERVAL 1000
 
+#define QSPI_STD_CMD_RSTEN          0x66
+
 // Allow for using reset button essentially to swap between application and
 // bootloader. This is controlled by a flag in the app and is the behavior of
 // CPX and all Arcade boards when using MakeCode. DFU_DBL_RESET magic is used to
@@ -157,11 +159,19 @@ int main(void) {
 
     board_init();
     DEBUG_LED(DEBUG_LED_1);
-    nrfx_qspi_config_t config_QSPI = NRFX_QSPI_DEFAULT_CONFIG(21, 25, 20, 24, 22, 23);
+    nrfx_qspi_config_t     config_QSPI    = NRFX_QSPI_DEFAULT_CONFIG(21, 25, 20, 24, 22, 23);
+    nrf_qspi_cinstr_conf_t QSPICinstr_cfg = NRFX_QSPI_DEFAULT_CINSTR(QSPI_STD_CMD_RSTEN, NRF_QSPI_CINSTR_LEN_1B);
+    assertCustom(nrfx_qspi_cinstr_xfer(&QSPICinstr_cfg, NULL, NULL));
     nrfx_qspi_init(&config_QSPI, NULL, NULL);
+
+#if defined CFG_DEBUG_CUSTOM
+    I2C_master_init();
+    lcd_begin();
+#endif
+
     DEBUG_LED(DEBUG_LED_2);
     bootloader_init();
-    PRINTF("Bootloader Start\r\n");
+    DEBUG_LCD_FUNC_UPPER();
     led_state(STATE_BOOTLOADER_STARTED);
 
     // When updating SoftDevice, bootloader will reset before swapping SD
@@ -177,16 +187,18 @@ int main(void) {
     // Check all inputs and enter DFU if needed
     // Return when DFU process is complete (or not entered at all)
     check_dfu_mode();
+    DEBUG_LCD_LINE();
 
     bool qspi_dfu_ok = false;
     if (is_qspi_dfu_ready()) {
         DEBUG_LED(DEBUG_LED_3);
         led_state(STATE_WRITING_STARTED);
         qspi_dfu_process();
-        led_state(STATE_WRITING_FINISHED);
         qspi_dfu_ok = true;
+        led_state(STATE_WRITING_FINISHED);
     }
     DEBUG_LED(DEBUG_LED_4);
+    DEBUG_LCD_CLEAR();
 
     // Reset peripherals
     board_teardown();

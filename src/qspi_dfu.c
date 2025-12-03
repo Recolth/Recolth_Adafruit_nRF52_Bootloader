@@ -7,6 +7,7 @@
 static uint32_t app_length = 0;
 
 bool is_qspi_dfu_ready() {
+    DEBUG_LCD_FUNC_UPPER();
     BootFlag magic_dfu;
     uint8_t  magicBlock[0x1000];
     qspi_read(&magicBlock, 0x1000, QSPI_ADDRESS_DFU_MAGIC_BLOCK);
@@ -27,6 +28,7 @@ bool is_qspi_dfu_ready() {
 }
 
 void qspi_dfu_process() {
+    DEBUG_LCD_FUNC_UPPER();
     const uint32_t app_internal_offset = DFU_BANK_0_REGION_START;
 
     uint8_t pBufQSPI[0x1000]           = {};

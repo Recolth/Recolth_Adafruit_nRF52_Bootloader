@@ -27,6 +27,10 @@
 #include "app_timer.h"
 #include "nrf_pwm.h"
 
+#if defined CFG_DEBUG_CUSTOM
+#  include "assertController.h"
+#endif
+
 #ifdef LED_APA102_CLK
 #  include "nrf_spim.h"
 #endif

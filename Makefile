@@ -145,6 +145,8 @@ C_SRC += \
   src/qspi_dfu.c \
   src/qspi_impl.c \
   src/hamming.c \
+  src/I2C.c \
+  src/lcd.c \
 
 # all files in boards
 C_SRC += src/boards/boards.c

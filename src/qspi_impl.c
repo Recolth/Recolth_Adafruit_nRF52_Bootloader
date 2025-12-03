@@ -1,6 +1,7 @@
 #include "qspi_dfu.h"
 
 nrfx_err_t waitForReady() {
+    DEBUG_LCD_LINE();
     while (nrfx_qspi_mem_busy_check() == NRFX_ERROR_BUSY) {
         ;
         ;
@@ -21,6 +22,7 @@ void qspi_write_4(const uint8_t *pData, uint32_t blockStartAddress) {
 }
 
 void qspi_read(void *pData, size_t length, uint32_t address) {
+    DEBUG_LCD_FUNC_LOWER();
     assertCustom((length % 4) == 0);
 
     assertCustom((address % 4) == 0);
@@ -29,6 +31,7 @@ void qspi_read(void *pData, size_t length, uint32_t address) {
 }
 
 void qspi_write_4_retry(const uint8_t *pData, uint32_t blockStartAddress) {
+    DEBUG_LCD_FUNC_LOWER();
     int     att            = 0;
     uint8_t blockr[0x1000] = {};
     while (1) {

@@ -1,12 +1,32 @@
 #ifndef ASSERTCONTROLLER_H
 #define ASSERTCONTROLLER_H
 #include "boards.h"
+#include "lcd.h"
 #include "nrfx_rtc.h"
 
 #ifdef CFG_DEBUG_CUSTOM
-#  define DEBUG_LED(led) nrf_gpio_pin_set(led)
+#  define DEBUG_LED(led)    nrf_gpio_pin_set(led)
+#  define DEBUG_LCD(string) lcd_write_string(string)
+#  define DEBUG_LCD_FUNC_UPPER()                                                                                                                          \
+      lcd_setCursor(0, 0);                                                                                                                                \
+      lcd_clear();                                                                                                                                        \
+      lcd_write_string(__func__)
+#  define DEBUG_LCD_FUNC_LOWER()                                                                                                                          \
+      lcd_setCursor(0, 1);                                                                                                                                \
+      lcd_write_string(__func__)
+#  define DEBUG_LCD_LINE()                                                                                                                                \
+      lcd_setCursor(13, 0);                                                                                                                               \
+      DEBUG_LCD("   ");                                                                                                                                   \
+      lcd_setCursor(13, 0);                                                                                                                               \
+      LCD_PRINT_NUM(__LINE__);
+#  define DEBUG_LCD_CLEAR() lcd_clear()
 #else
 #  define DEBUG_LED(led)
+#  define DEBUG_LCD(string)
+#  define DEBUG_LCD_FUNC_UPPER()
+#  define DEBUG_LCD_FUNC_LOWER()
+#  define DEBUG_LCD_LINE()
+#  define DEBUG_LCD_CLEAR()
 #endif
 
 inline static void _assertCustomImpl(const char *expr, const char *file, int line) __attribute__((__noreturn__));
