@@ -75,6 +75,7 @@ int verify256(uint8_t *pData, uint8_t *eccChecksum) {
     corr_code[2] = comp_code[2] ^ eccChecksum[2];
 
     int errc     = (__builtin_popcount(corr_code[0]) + __builtin_popcount(corr_code[1]) + __builtin_popcount(corr_code[2]));
+    DEBUG_LCD_CODE(lcd_setCursor(0, 0); LCD_PRINT_NUM(errc);)
 
     if (!errc) {
         return 0;
@@ -117,7 +118,7 @@ int ecc_checkAppBlock(uint32_t qspiBlockAddress, uint32_t internalBlockAddress, 
     bool     needRewrite       = false;
     for (size_t i = 0; i < 16; i++) {
         int errCode = verify256(&pBufQSPI[i * 0x100], &pBufInternal[(eccAddress % 0x1000) + eccChecksumOffset]);
-        if (errCode != -1) {                                      // File is bad
+        if (errCode == -1) {                                      // File is bad
             return -1;
         }
 

@@ -9,13 +9,14 @@ if [ -z "$LATEST_HEX" ]; then
 fi
 
 echo "$LATEST_HEX"
-
+if [ "$1" = "erase" ]; then
 openocd -f interface/stlink.cfg -f target/nrf52.cfg \
   -c "init" \
   -c "reset halt" \
   -c "nrf5 mass_erase" \
   -c "reset run" \
   -c "exit"
+fi
 
 sleep 1
 

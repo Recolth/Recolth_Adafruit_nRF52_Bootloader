@@ -1,7 +1,6 @@
 #include "qspi_dfu.h"
 
 nrfx_err_t qspi_waitForReady() {
-    DEBUG_LCD_CODE(lcd_setCursor(13, 1); LCD_PRINT_NUM(__LINE__));
     while (nrfx_qspi_mem_busy_check() == NRFX_ERROR_BUSY) {
         ;
         ;

@@ -7,6 +7,7 @@
 static uint32_t app_length = 0;
 
 bool is_qspi_dfu_ready() {
+    // return false;
     DEBUG_LCD_FUNC_UPPER();
     BootFlag magic_dfu;
     uint8_t  magicBlock[0x1000];
@@ -48,27 +49,27 @@ void qspi_dfu_process() {
             qspi_read(pBufQSPI, 0x1000, app_block_addr);
             int errc = ecc_checkAppBlock(app_block_addr, app_block_addr + app_internal_offset, pBufQSPI, pBufInternal);
             if (errc == -1) {
+                DEBUG_LCD_CODE(lcd_setCursor(13, 1); LCD_PRINT_NUM((int)(app_block_addr / 0x1000));)
                 attempt++;
                 if (attempt > 3) {
                     magic_dfu = BF_BAD;
                     break;
                 }
-            } else {
-                magic_dfu = BF_TRIAL_PENDING;
-                break;
             }
         }
-        if (magic_dfu) {
+        if (magic_dfu == BF_BAD) {
+            break;
+        } else {
+            magic_dfu = BF_TRIAL_PENDING;
             break;
         }
     }
-    DEBUG_LCD_FUNC_UPPER();
-    DEBUG_LCD_LINE();
+
+    assertCustom(magic_dfu != BF_BAD && magic_dfu);
+
     qspi_read(&pBufQSPI, 0x1000, QSPI_ADDRESS_DFU_MAGIC_BLOCK);
     memcpy(&pBufQSPI[QSPI_OFFSET_DFU_MAGIC_PRESENT], &magic_dfu, sizeof(magic_dfu));
     qspi_write_4_retry(pBufQSPI, QSPI_ADDRESS_DFU_MAGIC_BLOCK);
-
-    assertCustom(magic_dfu != BF_BAD && magic_dfu);
 
     bootloader_settings_t const *p_bootloader_settings;
     bootloader_util_settings_get(&p_bootloader_settings);
