@@ -108,6 +108,8 @@ extern void tusb_hal_nrf_power_event(uint32_t event);
 #define DFU_SERIAL_STARTUP_INTERVAL 1000
 
 #define QSPI_STD_CMD_RSTEN          0x66
+#define QSPI_STD_CMD_RST            0x99
+#define QSPI_STD_CMD_WRSR           0x01
 
 // Allow for using reset button essentially to swap between application and
 // bootloader. This is controlled by a flag in the app and is the behavior of
@@ -159,19 +161,40 @@ int main(void) {
 
     board_init();
     DEBUG_LED(DEBUG_LED_1);
-    nrfx_qspi_config_t     config_QSPI    = NRFX_QSPI_DEFAULT_CONFIG(21, 25, 20, 24, 22, 23);
-    nrf_qspi_cinstr_conf_t QSPICinstr_cfg = NRFX_QSPI_DEFAULT_CINSTR(QSPI_STD_CMD_RSTEN, NRF_QSPI_CINSTR_LEN_1B);
-    assertCustom(nrfx_qspi_cinstr_xfer(&QSPICinstr_cfg, NULL, NULL));
-    nrfx_qspi_init(&config_QSPI, NULL, NULL);
 
 #if defined CFG_DEBUG_CUSTOM
     I2C_master_init();
     lcd_begin();
 #endif
 
+    DEBUG_LCD_FUNC_UPPER();
+
+    {
+        DEBUG_LCD_CODE(lcd_setCursor(0, 1));
+        DEBUG_LCD("nrfx_qspi_init");
+        nrfx_qspi_config_t config_QSPI = NRFX_QSPI_DEFAULT_CONFIG(21, 25, 20, 24, 22, 23);
+        assertCustom(nrfx_qspi_init(&config_QSPI, NULL, NULL) == NRFX_SUCCESS);
+        qspi_waitForReady();
+        DEBUG_LCD_CODE(lcd_setCursor(0, 1));
+        DEBUG_LCD("QSPI_STD_CMD_RSTEN");
+        nrf_qspi_cinstr_conf_t QSPICinstr_cfg = NRFX_QSPI_DEFAULT_CINSTR(QSPI_STD_CMD_RSTEN, NRF_QSPI_CINSTR_LEN_1B);
+        assertCustom(nrfx_qspi_cinstr_xfer(&QSPICinstr_cfg, NULL, NULL) == NRFX_SUCCESS);
+        QSPICinstr_cfg.opcode = QSPI_STD_CMD_RST;
+        qspi_waitForReady();
+        DEBUG_LCD_CODE(lcd_setCursor(0, 1));
+        DEBUG_LCD("QSPI_STD_CMD_RST");
+        assertCustom(nrfx_qspi_cinstr_xfer(&QSPICinstr_cfg, NULL, NULL) == NRFX_SUCCESS);
+        QSPICinstr_cfg.opcode = QSPI_STD_CMD_WRSR;
+        QSPICinstr_cfg.length = NRF_QSPI_CINSTR_LEN_3B;
+        uint8_t temp[2]       = {0x00, 0x02}; // Adjust based on datasheet
+        qspi_waitForReady();
+        DEBUG_LCD_CODE(lcd_setCursor(0, 1));
+        DEBUG_LCD("QSPI_STD_CMD_WRSR");
+        assertCustom(nrfx_qspi_cinstr_xfer(&QSPICinstr_cfg, &temp, NULL) == NRFX_SUCCESS);
+    }
+
     DEBUG_LED(DEBUG_LED_2);
     bootloader_init();
-    DEBUG_LCD_FUNC_UPPER();
     led_state(STATE_BOOTLOADER_STARTED);
 
     // When updating SoftDevice, bootloader will reset before swapping SD

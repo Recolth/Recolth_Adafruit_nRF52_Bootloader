@@ -1,7 +1,7 @@
 #include "qspi_dfu.h"
 
-nrfx_err_t waitForReady() {
-    DEBUG_LCD_LINE();
+nrfx_err_t qspi_waitForReady() {
+    DEBUG_LCD_CODE(lcd_setCursor(13, 1); LCD_PRINT_NUM(__LINE__));
     while (nrfx_qspi_mem_busy_check() == NRFX_ERROR_BUSY) {
         ;
         ;
@@ -11,14 +11,14 @@ nrfx_err_t waitForReady() {
 
 void qspi_erase_4(uint32_t blockStartAddress) {
     assertCustom((blockStartAddress % 0x1000) == 0);
-    waitForReady();
+    qspi_waitForReady();
     assertCustom(nrfx_qspi_erase(NRF_QSPI_ERASE_LEN_4KB, blockStartAddress) == NRFX_SUCCESS);
 }
 
 void qspi_write_4(const uint8_t *pData, uint32_t blockStartAddress) {
     assertCustom((blockStartAddress % 0x1000) == 0);
-    waitForReady();
-    assertCustom(nrfx_qspi_write(pData, 0x1000, blockStartAddress));
+    qspi_waitForReady();
+    assertCustom(nrfx_qspi_write(pData, 0x1000, blockStartAddress) == NRFX_SUCCESS);
 }
 
 void qspi_read(void *pData, size_t length, uint32_t address) {
@@ -26,7 +26,7 @@ void qspi_read(void *pData, size_t length, uint32_t address) {
     assertCustom((length % 4) == 0);
 
     assertCustom((address % 4) == 0);
-    waitForReady();
+    qspi_waitForReady();
     assertCustom(nrfx_qspi_read(pData, length, address) == NRFX_SUCCESS);
 }
 

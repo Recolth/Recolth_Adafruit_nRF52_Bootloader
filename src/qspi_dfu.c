@@ -35,33 +35,40 @@ void qspi_dfu_process() {
     uint8_t pBufInternal[0x1000]       = {};
 
     uint8_t  attempt                   = 0;
-    BootFlag magic_dfu                 = BF_BAD;
+    BootFlag magic_dfu                 = 0;
 
     while (1) {
+        DEBUG_LCD_LINE();
         for (uint32_t app_block_addr = 0; app_block_addr + 0x1000 <= app_length; app_block_addr += 0x1000) {
             qspi_read(pBufQSPI, 0x1000, app_block_addr);
             flash_nrf5x_rewrite_page(app_block_addr + app_internal_offset, pBufQSPI);
         }
-
+        DEBUG_LCD_LINE();
         for (uint32_t app_block_addr = 0; app_block_addr + 0x1000 <= app_length; app_block_addr += 0x1000) {
             qspi_read(pBufQSPI, 0x1000, app_block_addr);
             int errc = ecc_checkAppBlock(app_block_addr, app_block_addr + app_internal_offset, pBufQSPI, pBufInternal);
             if (errc == -1) {
                 attempt++;
                 if (attempt > 3) {
+                    magic_dfu = BF_BAD;
                     break;
                 }
             } else {
                 magic_dfu = BF_TRIAL_PENDING;
+                break;
             }
         }
+        if (magic_dfu) {
+            break;
+        }
     }
-
+    DEBUG_LCD_FUNC_UPPER();
+    DEBUG_LCD_LINE();
     qspi_read(&pBufQSPI, 0x1000, QSPI_ADDRESS_DFU_MAGIC_BLOCK);
     memcpy(&pBufQSPI[QSPI_OFFSET_DFU_MAGIC_PRESENT], &magic_dfu, sizeof(magic_dfu));
     qspi_write_4_retry(pBufQSPI, QSPI_ADDRESS_DFU_MAGIC_BLOCK);
 
-    assertCustom(magic_dfu != BF_BAD);
+    assertCustom(magic_dfu != BF_BAD && magic_dfu);
 
     bootloader_settings_t const *p_bootloader_settings;
     bootloader_util_settings_get(&p_bootloader_settings);

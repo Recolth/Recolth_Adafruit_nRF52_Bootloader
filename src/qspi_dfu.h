@@ -15,9 +15,10 @@ typedef enum {
 #define QSPI_OFFSET_DFU_MAGIC_PRESENT 0x00000FF7 // BootFlag location
 #define QSPI_OFFSET_DFU_FILE_LENGTH   0x00000FFB // app size location
 
-void qspi_erase_4(uint32_t blockStartAddress);
-void qspi_write_4_retry(const uint8_t *pData, uint32_t blockStartAddress);
-void qspi_read(void *pData, size_t length, uint32_t address);
+void       qspi_erase_4(uint32_t blockStartAddress);
+void       qspi_write_4_retry(const uint8_t *pData, uint32_t blockStartAddress);
+void       qspi_read(void *pData, size_t length, uint32_t address);
+nrfx_err_t qspi_waitForReady();
 
 bool is_qspi_dfu_ready();
 void qspi_dfu_process();

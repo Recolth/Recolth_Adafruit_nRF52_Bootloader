@@ -19,7 +19,8 @@
       DEBUG_LCD("   ");                                                                                                                                   \
       lcd_setCursor(13, 0);                                                                                                                               \
       LCD_PRINT_NUM(__LINE__);
-#  define DEBUG_LCD_CLEAR() lcd_clear()
+#  define DEBUG_LCD_CLEAR()    lcd_clear()
+#  define DEBUG_LCD_CODE(code) code
 #else
 #  define DEBUG_LED(led)
 #  define DEBUG_LCD(string)
@@ -27,6 +28,7 @@
 #  define DEBUG_LCD_FUNC_LOWER()
 #  define DEBUG_LCD_LINE()
 #  define DEBUG_LCD_CLEAR()
+#  define DEBUG_LCD_CODE(code)
 #endif
 
 inline static void _assertCustomImpl(const char *expr, const char *file, int line) __attribute__((__noreturn__));

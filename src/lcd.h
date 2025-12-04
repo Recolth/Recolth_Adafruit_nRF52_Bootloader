@@ -4,9 +4,11 @@
 #include "I2C.h"
 
 #define LCD_PRINT_NUM(num)                                                                                                                                \
-    char buf[3];                                                                                                                                          \
-    sprintf(buf, "%d", num);                                                                                                                              \
-    lcd_write_string(buf);
+    {                                                                                                                                                     \
+        char buf[3];                                                                                                                                      \
+        sprintf(buf, "%d", num);                                                                                                                          \
+        lcd_write_string(buf);                                                                                                                            \
+    }
 
 void lcd_begin();
 void lcd_write(uint8_t ch);
