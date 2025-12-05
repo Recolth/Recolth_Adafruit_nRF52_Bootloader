@@ -43,7 +43,8 @@ inline static void _assertCustomImpl(const char *expr, const char *file, int lin
     nrf_gpio_pin_clear(DEBUG_LED_4);
     nrf_gpio_pin_clear(DEBUG_LED_5);
     nrf_gpio_pin_clear(DEBUG_LED_6);
-    const uint32_t period = (line > 127) ? 32000 : 64000;
+    nrf_gpio_pin_clear(DEBUG_LED_7);
+    const uint32_t period = 64000;
 #endif
     led_state(STATE_WRITING_STARTED);
     while (true) {
@@ -69,6 +70,9 @@ inline static void _assertCustomImpl(const char *expr, const char *file, int lin
             }
             if (line & 0b1000000) {
                 nrf_gpio_pin_toggle(DEBUG_LED_6);
+            }
+            if (line & 0b10000000) {
+                nrf_gpio_pin_toggle(DEBUG_LED_7);
             }
         }
 #endif

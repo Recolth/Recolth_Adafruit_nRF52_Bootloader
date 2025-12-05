@@ -52,9 +52,10 @@
 #define DEBUG_LED_1 _PINNUM(0, 3)
 #define DEBUG_LED_2 _PINNUM(0, 28)
 #define DEBUG_LED_3 _PINNUM(0, 29)
-#define DEBUG_LED_4 _PINNUM(1, 14)
-#define DEBUG_LED_5 _PINNUM(1, 13)
-#define DEBUG_LED_6 _PINNUM(1, 11)
+#define DEBUG_LED_4 _PINNUM(1, 13)
+#define DEBUG_LED_5 _PINNUM(1, 14)
+#define DEBUG_LED_6 _PINNUM(1, 12)
+#define DEBUG_LED_7 _PINNUM(1, 11)
 
 //--------------------------------------------------------------------+
 // BLE OTA

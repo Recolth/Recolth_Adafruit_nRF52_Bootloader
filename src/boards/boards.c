@@ -98,6 +98,7 @@ void board_init(void) {
     nrf_gpio_cfg_output(DEBUG_LED_4);
     nrf_gpio_cfg_output(DEBUG_LED_5);
     nrf_gpio_cfg_output(DEBUG_LED_6);
+    nrf_gpio_cfg_output(DEBUG_LED_7);
     nrf_gpio_pin_clear(DEBUG_LED_0);
     nrf_gpio_pin_clear(DEBUG_LED_1);
     nrf_gpio_pin_clear(DEBUG_LED_2);
@@ -105,6 +106,7 @@ void board_init(void) {
     nrf_gpio_pin_clear(DEBUG_LED_4);
     nrf_gpio_pin_clear(DEBUG_LED_5);
     nrf_gpio_pin_clear(DEBUG_LED_6);
+    nrf_gpio_pin_clear(DEBUG_LED_7);
 #endif
 
 #if defined(LED_NEOPIXEL) || defined(LED_RGB_RED_PIN) || defined(LED_APA102_CLK)
@@ -181,6 +183,7 @@ void board_teardown(void) {
     nrf_gpio_pin_clear(DEBUG_LED_4);
     nrf_gpio_pin_clear(DEBUG_LED_5);
     nrf_gpio_pin_clear(DEBUG_LED_6);
+    nrf_gpio_pin_clear(DEBUG_LED_7);
     nrf_gpio_cfg_default(DEBUG_LED_0);
     nrf_gpio_cfg_default(DEBUG_LED_1);
     nrf_gpio_cfg_default(DEBUG_LED_2);
@@ -188,6 +191,7 @@ void board_teardown(void) {
     nrf_gpio_cfg_default(DEBUG_LED_4);
     nrf_gpio_cfg_default(DEBUG_LED_5);
     nrf_gpio_cfg_default(DEBUG_LED_6);
+    nrf_gpio_cfg_default(DEBUG_LED_7);
 #endif
 
 #ifdef DISPLAY_PIN_SCK
