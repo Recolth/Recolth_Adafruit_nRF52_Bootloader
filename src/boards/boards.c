@@ -107,6 +107,9 @@ void board_init(void) {
     nrf_gpio_pin_clear(DEBUG_LED_5);
     nrf_gpio_pin_clear(DEBUG_LED_6);
     nrf_gpio_pin_clear(DEBUG_LED_7);
+#else
+    nrf_gpio_cfg_output(SYS_PIN); // if not in debug then on prod board, need pin up for long operations
+    nrf_gpio_pin_set(SYS_PIN);
 #endif
 
 #if defined(LED_NEOPIXEL) || defined(LED_RGB_RED_PIN) || defined(LED_APA102_CLK)

@@ -1,4 +1,5 @@
 #include "qspi_dfu.h"
+#include <stdint.h>
 
 #define QSPI_ADDRESS_DFU_ECC 0x000F0000
 
@@ -100,6 +101,43 @@ int verify256(uint8_t *pData, uint8_t *eccChecksum) {
         return 1;
     }
     return -1;
+}
+
+int ecc_checkQSPIBlocks(uint32_t app_length) {
+    uint8_t pBufQSPI[0x1000] = {};
+    uint8_t pBufEcc[0x1000]  = {};
+
+    uint32_t eccBlockAddress = 0;
+
+    for (uint32_t qspi_block_addr = 0; qspi_block_addr + 0x1000 <= app_length; qspi_block_addr += 0x1000) {
+        uint32_t eccIndex           = qspi_block_addr / 0x1000;
+        uint32_t eccAddress         = QSPI_ADDRESS_DFU_ECC + (eccIndex * 0x40);
+        uint32_t newEccBlockAddress = eccAddress - (eccAddress % 0x1000);
+
+        if (newEccBlockAddress != eccBlockAddress) {
+            eccBlockAddress = newEccBlockAddress;
+            qspi_read(pBufEcc, 0x1000, newEccBlockAddress);
+        }
+        qspi_read(pBufQSPI, 0x1000, qspi_block_addr);
+
+        uint32_t eccChecksumOffset = 0;                           // Offset of ECC shecksum in the loop
+        bool     needRewrite       = false;
+        for (size_t i = 0; i < 16; i++) {
+            int errCode = verify256(&pBufQSPI[i * 0x100], &pBufEcc[(eccAddress % 0x1000) + eccChecksumOffset]);
+            if (errCode == -1) {                                  // File is bad
+                return -1;
+            }
+
+            if (errCode == 1) {
+                needRewrite = true;                               // Rewrite fixed block into flash here and now
+            }
+            eccChecksumOffset += 4;                               // Shift to next 32-bit ECC checksum address
+        }
+        if (needRewrite) {
+            qspi_write_4_retry(pBufQSPI, qspi_block_addr);        // Rewrite fixed block into flash here and now
+        }
+    }
+    return 0;
 }
 
 int ecc_checkAppBlock(uint32_t qspiBlockAddress, uint32_t internalBlockAddress, uint8_t *pBufQSPI, uint8_t *pBufInternal) {

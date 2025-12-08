@@ -9,6 +9,8 @@ CompileFlags:
     "--target=arm-none-eabi",
     "-isystem", "$gcc_inc",
     "-isystem", "$gcc_fix",
-    "-isystem", "$sysroot"
+    "-isystem", "$sysroot",
+    "-D__GNUC__=0"
   ]
+  Remove: [-fno-ipa-modref]
 EOF

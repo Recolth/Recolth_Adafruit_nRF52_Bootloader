@@ -16,10 +16,10 @@ bool is_qspi_dfu_ready() {
     memcpy(&app_length, &magicBlock[QSPI_OFFSET_DFU_FILE_LENGTH], sizeof(app_length));
 
     if (magic_dfu == BF_READY) {
-        if (app_length && app_length <= DFU_IMAGE_MAX_SIZE_FULL) {
+        if (app_length && app_length <= DFU_IMAGE_MAX_SIZE_FULL && !ecc_checkQSPIBlocks(app_length)) {
             return true;
         }
-        magic_dfu = BF_EMPTY;
+        magic_dfu = BF_EMPTY; // Bad image, consider non-existent
         memcpy(&magicBlock[QSPI_OFFSET_DFU_MAGIC_PRESENT], &magic_dfu, sizeof(magic_dfu));
         qspi_write_4_retry(magicBlock, QSPI_ADDRESS_DFU_MAGIC_BLOCK);
     }

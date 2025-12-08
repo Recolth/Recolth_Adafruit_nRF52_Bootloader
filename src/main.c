@@ -43,9 +43,7 @@
 #include "bootloader.h"
 
 #include "app_scheduler.h"
-#include "ble.h"
 #include "nrf_error.h"
-#include "nrf_nvic.h"
 #include "nrf_soc.h"
 
 #include "boards.h"

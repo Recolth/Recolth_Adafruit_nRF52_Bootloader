@@ -24,3 +24,4 @@ bool is_qspi_dfu_ready();
 void qspi_dfu_process();
 
 int ecc_checkAppBlock(uint32_t qspiBlockAddress, uint32_t internalBlockAddress, uint8_t *pBufQSPI, uint8_t *pBufInternal);
+int ecc_checkQSPIBlocks(uint32_t app_length);
