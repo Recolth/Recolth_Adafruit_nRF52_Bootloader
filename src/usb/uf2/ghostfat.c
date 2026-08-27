@@ -40,9 +40,11 @@
 //
 //--------------------------------------------------------------------+
 
+// FAT text fields are fixed-width and space-padded, never NUL-terminated; `nonstring`
+// states that intent (gcc 15+ otherwise errors on -Wunterminated-string-initialization).
 typedef struct {
     uint8_t JumpInstruction[3];
-    uint8_t OEMInfo[8];
+    uint8_t OEMInfo[8] __attribute__((nonstring));
     uint16_t SectorSize;
     uint8_t SectorsPerCluster;
     uint16_t ReservedSectors;
@@ -59,8 +61,8 @@ typedef struct {
     uint8_t Reserved;
     uint8_t ExtendedBootSig;
     uint32_t VolumeSerialNumber;
-    uint8_t VolumeLabel[11];
-    uint8_t FilesystemIdentifier[8];
+    uint8_t VolumeLabel[11] __attribute__((nonstring));
+    uint8_t FilesystemIdentifier[8] __attribute__((nonstring));
 } __attribute__((packed)) FAT_BootBlock;
 
 typedef struct {
@@ -81,7 +83,7 @@ typedef struct {
 STATIC_ASSERT(sizeof(DirEntry) == 32);
 
 struct TextFile {
-  char const name[11];
+  char const name[11] __attribute__((nonstring)); // FAT 8.3 name -- see FAT_BootBlock
   char const *content;
 };
 

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-openocd -f ~/stlink_nrf52.cfg
+openocd -f ./stlink_nrf52.cfg

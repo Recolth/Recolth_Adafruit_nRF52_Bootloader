@@ -350,8 +350,9 @@ endif
 CFLAGS += -DDFU_APP_DATA_RESERVED=$(DFU_APP_DATA_RESERVED)
 
 # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105523
-# Fixes for gcc version 12, 13 and 14.
-ifneq (,$(filter 12.% 13.% 14.%,$(shell $(CC) -dumpversion 2>/dev/null)))
+# Needed by gcc 12 onwards. Probed rather than version-matched so a new gcc major
+# does not silently drop the workaround (or get it after the bug is fixed upstream).
+ifeq (yes,$(shell $(CC) --param=min-pagesize=0 -E -x c /dev/null >/dev/null 2>&1 && echo yes))
 	CFLAGS += --param=min-pagesize=0
 endif
 

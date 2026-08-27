@@ -10,14 +10,14 @@ fi
 
 echo "$LATEST_HEX"
 if [ "$1" = "erase" ]; then
-openocd -f interface/stlink.cfg -f target/nrf52.cfg \
-  -c "init" \
-  -c "reset halt" \
-  -c "nrf5 mass_erase" \
-  -c "reset run" \
-  -c "exit"
+    openocd -f interface/stlink.cfg -f target/nrf52.cfg \
+        -c "init" \
+        -c "reset halt" \
+        -c "nrf5 mass_erase" \
+        -c "reset run" \
+        -c "exit"
 fi
 
 sleep 1
 
-openocd -f ~/stlink_nrf52.cfg -c "program \"$LATEST_HEX\" verify reset exit"    #set WORKAREASIZE 0 or set WORKAREASIZE 0x400 in config
+openocd -f ./stlink_nrf52.cfg -c "program \"$LATEST_HEX\" verify reset exit" #set WORKAREASIZE 0 or set WORKAREASIZE 0x400 in config
